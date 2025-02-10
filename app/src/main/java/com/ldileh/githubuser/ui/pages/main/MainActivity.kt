@@ -10,6 +10,7 @@ import com.ldileh.githubuser.data.local.entity.UserEntity
 import com.ldileh.githubuser.databinding.ActivityMainBinding
 import com.ldileh.githubuser.ui.adapter.IUserAdapter
 import com.ldileh.githubuser.ui.adapter.UserAdapter
+import com.ldileh.githubuser.ui.pages.detail.DetailActivity
 import com.ldileh.githubuser.utils.collectLatestFlow
 import com.ldileh.githubuser.utils.safe
 import dagger.hilt.android.AndroidEntryPoint
@@ -62,7 +63,9 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(), IUserAd
     }
 
     override fun onUserClicked(user: UserEntity) {
-        Toast.makeText(this@MainActivity, user.login.safe(), Toast.LENGTH_SHORT).show()
+        DetailActivity
+            .getIntent(this@MainActivity, user)
+            .run { startActivity(this) }
     }
 
     private fun MainViewModel.observe(){

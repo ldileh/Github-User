@@ -36,27 +36,4 @@ class MainViewModel @Inject constructor(
     fun setSearchQuery(query: String) {
         _searchQuery.value = query
     }
-
-//    private val _itemsUsers: MutableStateFlow<List<User>> = MutableStateFlow(listOf())
-//    val itemsUsers: Flow<List<User>> = _itemsUsers
-//
-//    init {
-//        getUsers(1)
-//    }
-//
-//    fun getUsers(page: Int){
-//        viewModelScope.launch(Dispatchers.IO) {
-//            githubRepositories
-//                .getUsers()
-//                .suspendOnSuccess {
-//                    _itemsUsers.value = data
-//                }
-//                .suspendOnError {
-//                    _messageError.value = message()
-//                }
-//                .suspendOnException {
-//                    _messageError.value = message()
-//                }
-//        }
-//    }
 }

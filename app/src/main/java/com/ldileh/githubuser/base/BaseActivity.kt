@@ -23,7 +23,8 @@ abstract class BaseActivity<VB: ViewBinding, VM: BaseViewModel> : AppCompatActiv
         _binding = inflateBinding()
             .also { setContentView(it.root) }
             .also { it.root.defaultScreenConfiguration() }
-            .also { it.setupView() }
+
+        binding.setupView()
     }
 
     protected fun VM.observeDefault(){

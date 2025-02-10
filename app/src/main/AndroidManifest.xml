@@ -25,6 +25,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".ui.pages.detail.DetailActivity"
+            android:theme="@style/Theme.githubuser.NoActionBar"
+            android:exported="false"/>
     </application>
 
 </manifest>
