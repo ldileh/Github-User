@@ -7,6 +7,8 @@ import com.ldileh.githubuser.data.local.entity.UserEntity
 import com.ldileh.githubuser.data.remote.service.GithubAPI
 import com.ldileh.githubuser.models.response.User
 import com.ldileh.githubuser.utils.safe
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -16,29 +18,31 @@ class UserRemoteMediator(
     private val database: AppDatabase
 ) : RemoteMediator<Int, UserEntity>() {
 
-    private val userDao = database.userDao()
-
-    override suspend fun load(loadType: LoadType, state: PagingState<Int, UserEntity>): MediatorResult {
+    override suspend fun load(
+        loadType: LoadType,
+        state: PagingState<Int, UserEntity>
+    ): MediatorResult {
         return try {
-            val since = when (loadType) {
+            val lastUserId = when (loadType) {
                 LoadType.REFRESH -> 0
-                LoadType.PREPEND -> return MediatorResult.Success(endOfPaginationReached = true)
-                LoadType.APPEND -> state.lastItemOrNull()?.id ?: return MediatorResult.Success(endOfPaginationReached = true)
+                LoadType.PREPEND ->
+                        return MediatorResult.Success(endOfPaginationReached = true)
+                LoadType.APPEND -> state.lastItemOrNull()?.id ?:
+                    return MediatorResult.Success(endOfPaginationReached = true)
             }
+            val response = api.getUsers(since = lastUserId, perPage = state.config.pageSize)
 
-            val response = api.getUsers(since, state.config.pageSize)
-
-            database.withTransaction {
-                if (loadType == LoadType.REFRESH) {
-                    userDao.clearUsers() // Clear old data
+            withContext(Dispatchers.IO) {
+                database.withTransaction {
+                    if (loadType == LoadType.REFRESH) {
+                        database.userDao().clearUsers()
+                    }
+                    database.userDao().insertUsers(response.map { it.toEntity() })
                 }
-                userDao.insertUsers(response.map { it.toEntity() }) // Save new data
             }
 
             MediatorResult.Success(endOfPaginationReached = response.isEmpty())
-        } catch (e: IOException) {
-            MediatorResult.Error(e)
-        } catch (e: HttpException) {
+        } catch (e: Exception) {
             MediatorResult.Error(e)
         }
     }

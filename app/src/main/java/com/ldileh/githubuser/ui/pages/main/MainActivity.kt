@@ -3,6 +3,7 @@ package com.ldileh.githubuser.ui.pages.main
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.core.widget.doAfterTextChanged
 import androidx.paging.LoadState
 import com.ldileh.githubuser.base.BaseActivity
 import com.ldileh.githubuser.data.local.entity.UserEntity
@@ -12,6 +13,7 @@ import com.ldileh.githubuser.ui.adapter.UserAdapter
 import com.ldileh.githubuser.utils.collectLatestFlow
 import com.ldileh.githubuser.utils.safe
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 
 @AndroidEntryPoint
 class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(), IUserAdapter {
@@ -53,6 +55,10 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(), IUserAd
                 }
             }
         }
+
+        edtSearch.doAfterTextChanged { s ->
+            viewModel.setSearchQuery(s.toString().trim())
+        }
     }
 
     override fun onUserClicked(user: UserEntity) {
@@ -61,6 +67,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(), IUserAd
 
     private fun MainViewModel.observe(){
         users.collectLatestFlow(this@MainActivity) {
+            delay(500)
             userAdapter.submitData(it)
         }
     }
