@@ -6,7 +6,6 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
-import androidx.core.widget.doAfterTextChanged
 import androidx.paging.LoadState
 import com.google.android.material.appbar.AppBarLayout
 import com.ldileh.githubuser.base.BaseActivity
@@ -60,6 +59,15 @@ class DetailActivity: BaseActivity<ActivityDetailBinding, DetailViewModel>(),
                 it.error.printStackTrace()
                 // show it to user
                 viewModel.showMessageError(it.error.localizedMessage)
+            }
+
+            // show state of loading when load data user repos
+            binding.viewLoadingRepo.apply {
+                if (loadState.refresh is LoadState.Loading){
+                    showLoading()
+                }else{
+                    hideLoading()
+                }
             }
         }
 

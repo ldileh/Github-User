@@ -26,8 +26,8 @@ interface GithubAPI {
     @GET("users/{user}/repos")
     suspend fun getUserRepos(
         @Path("user") user: String,
+        @Query("page") page: Int,
         @Query("per_page") perPage: Int,
-        @Query("page") page: Int
     ): List<RepoResponse>
 
     @GET("users/{user}")

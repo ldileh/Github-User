@@ -78,14 +78,19 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <!-- Content Area -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/list_repo"
+    <com.ldileh.githubuser.widget.LoadingContainer
+        android:id="@+id/view_loading_repo"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/item_repo"
-        tools:itemCount="5"/>
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/list_repo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_repo"
+            tools:itemCount="5"/>
+    </com.ldileh.githubuser.widget.LoadingContainer>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
